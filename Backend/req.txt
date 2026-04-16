@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+alembic
+pydantic
+pandas
+numpy
+scikit-learn
+tensorflow
+matplotlib
+seaborn
+python-multipart
+python-dotenv
+aiofiles
+itsdangerous
+statsmodels

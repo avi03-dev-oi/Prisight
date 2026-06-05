@@ -59,4 +59,9 @@ class UserService:
             raise HTTPException(status_code=401, detail="Invalid email or password.")
         
         # Return a proper dictionary response, not HTTPException
-        return {"status": "success", "message": "Login successful.", "user": {"email": user.email, "username": user.username}}
+        return {
+            "status": "success",
+            "message": "Login successful.",
+            "user": {"email": user.email, "username": user.username, "is_admin": user.is_admin},
+            "is_admin": user.is_admin
+        }

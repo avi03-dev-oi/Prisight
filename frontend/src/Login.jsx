@@ -4,48 +4,54 @@ import { Link, useNavigate } from "react-router-dom";
 export default function Login() {
   const [formData, setFormData] = React.useState({
     email: "",
-    password: ""
+    password: "",
   });
   const [error, setError] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-    setError(""); // Clear error on input change
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     setLoading(true);
-    
+
+    // ── Detect admin credentials and use the admin-login endpoint ─────────
+    const isAdminAttempt =
+      formData.email === "admin@prisight.com";
+
+    const endpoint = isAdminAttempt
+      ? "http://localhost:8000/users/admin-login"
+      : "http://localhost:8000/users/login";
+
     try {
-      const response = await fetch("http://localhost:8000/users/login", {
+      const response = await fetch(endpoint, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
       const data = await response.json();
 
-      if (response.ok) {
-        // Login successful
-        alert("Login successful!");
-        // Store user data if needed (e.g., in localStorage or context)
-        if (data.user) {
-          localStorage.setItem("user", JSON.stringify(data.user));
+      if (response.ok && data.status === "success") {
+        // Store user info
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        if (data.is_admin) {
+          // Store the admin token the backend will expect on every /api/admin/* call
+          localStorage.setItem("is_admin", "true");
+          localStorage.setItem("admin_token", "prisight-admin-secret");
+          navigate("/admin/model-evaluation");
+        } else {
+          localStorage.removeItem("is_admin");
+          localStorage.removeItem("admin_token");
+          navigate("/dashboard");
         }
-        // Redirect to dashboard or home page
-        navigate("/dashboard"); // Change to your desired route
       } else {
-        // Handle error from backend
-        setError(data.detail || "Login failed. Please try again.");
+        setError(data.detail || data.message || "Login failed. Please try again.");
       }
     } catch (err) {
       setError("Network error. Please check your connection.");
@@ -57,12 +63,8 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900">
-      
       <div className="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-8 shadow-2xl text-white">
-        
-        <h1 className="text-3xl font-bold text-center mb-2">
-          Prisight
-        </h1>
+        <h1 className="text-3xl font-bold text-center mb-2">Prisight</h1>
         <p className="text-center text-sm text-gray-300 mb-6">
           Intelligent Retail Analytics
         </p>
@@ -74,7 +76,6 @@ export default function Login() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Email */}
           <div>
             <label className="text-sm">Email</label>
             <input
@@ -88,7 +89,6 @@ export default function Login() {
             />
           </div>
 
-          {/* Password */}
           <div>
             <label className="text-sm">Password</label>
             <input

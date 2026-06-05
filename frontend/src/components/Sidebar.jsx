@@ -24,6 +24,15 @@ export default function Sidebar({ onLogout }) {
           <NavLink to="/inventory" className={linkClass}>
             Inventory
           </NavLink>
+          <NavLink to="/admin/model-evaluation" className={linkClass}>
+            Model Evaluation
+          </NavLink>
+          <NavLink to="/admin/hyperparameter-tuning" className={linkClass}>
+            Hyperparameter Tuning
+          </NavLink>
+          <NavLink to="/admin/model-leaderboard" className={linkClass}>
+            Model Leaderboard
+          </NavLink>
         </nav>
       </div>
 

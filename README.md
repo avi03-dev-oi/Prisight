@@ -303,6 +303,7 @@ Open your browser to `http://localhost:5173`, register an account, and start exp
 </details>
 
 ---
+[![GitHub](https://img.shields.io/badge/GitHub-avi03--dev--oi%2FPrisight-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/avi03-dev-oi/Prisight)
 
 ## 🔌 API Reference
 
